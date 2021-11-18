@@ -20,3 +20,14 @@ This is the decentralized marketplace for selling nft tokens
 <!-- Todo, not exactly profitable for this hackathon -->
 ## stream payment.sol
 This streams payment to the content creator to ensure they don't runaway with investor's funding
+
+
+
+- create a token
+ share the token or ayction at marketplace
+
+- share token
+  Investor Buyout
+
+- Agora Market
+  Investor Executes Order
