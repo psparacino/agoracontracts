@@ -65,14 +65,18 @@ Status state;
 
 
 
-  constructor() ERC20('shared Agora Nft', 'agx') {
+   address AgoraNFTaddress;
+
+
+  constructor( address _agoraNft) ERC20('shared Agora Nft', 'agx') {
    sharedId = 0;
+   AgoraNFTaddress = _agoraNft;
   }
 
 
   function shareAgoraNft(uint _tokenId, uint price) external 
    {
-    transferFrom(msg.sender, address(this), _tokenId);
+    ERC721(AgoraNFTaddress).transferFrom(msg.sender, address(this), _tokenId);
     SharedDrop memory sharedDrop = 
     // sharedDrops[_tokenId];
     SharedDrop({
