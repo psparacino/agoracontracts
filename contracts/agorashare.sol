@@ -74,7 +74,7 @@ Status state;
   }
 
 
-  function shareAgoraNft(uint _tokenId, uint price) external 
+  function shareAgoraNft(uint _tokenId, uint priceinWei) external 
    {
     ERC721(AgoraNFTaddress).transferFrom(msg.sender, address(this), _tokenId);
     SharedDrop memory sharedDrop = 
@@ -86,7 +86,7 @@ Status state;
         tokenId: _tokenId,
         tokensleft: 100,
         sold: 0,
-       unitprice: price / 100 ,
+       unitprice: priceinWei / 100 ,
        state: Status.Shared
     });
      sharedId += 1;
@@ -103,14 +103,14 @@ Status state;
 
 
 
-  function buyShares(uint16 _sharedId, uint16 amount) external {
+  function buyShares(uint16 _sharedId, uint16 amount) external payable {
     //   require buyer has enough money to purchase the amount of tokens
     // subtract the amount sold from the 
      uint tobuy =  sharedDrops[_sharedId].unitprice * amount;
 
      require(sharedDrops[_sharedId].state == Status.Shared, "Shares not yet available for that Id" );
 
-     require( balanceOf(msg.sender) > tobuy, "you don't have enough money");
+     require( msg.value >= tobuy, "you don't have enough money");
       sharedDrops[_sharedId].tokensleft -= amount;
       sharedDrops[_sharedId].sold += amount;
 
@@ -165,17 +165,17 @@ Status state;
 
 
 // --------------------------------------getters-----------------------------------
-  function getInvestor(uint16 tokenId) public view returns ( address [] memory) {
-   return  investors[tokenId];
+  function getInvestor(uint16 _sharedId) internal view returns ( address [] memory) {
+   return  investors[_sharedId];
   }
 
-  function getInvestorNShares(uint16 tokenId) external  returns ( uint [] memory) {
+  function getInvestorNShares(uint16 _sharedId) external  returns (address [] memory, uint [] memory) {
     // uint[] storage knownShares;
-    investors [tokenId] = getInvestor(tokenId);
+    investors [_sharedId] = getInvestor(_sharedId);
     uint16 i = 0;
-    while( investors[tokenId].length > i )
+    while( investors[_sharedId].length > i )
     {
-       knownShares.push(share[tokenId][investors[tokenId][i]]) ;
+       knownShares.push(share[_sharedId][investors[_sharedId][i]]) ;
 
     }
   //  for (uint16 i = 0; i++; i <= investors[tokenId].length){
@@ -186,6 +186,6 @@ Status state;
   //       );
   //  }
   // return (investors, knownShares);
-  return knownShares;
+  return (investors[_sharedId], knownShares);
   }
 }
