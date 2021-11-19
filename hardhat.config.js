@@ -11,6 +11,10 @@ module.exports = {
         url: "https://api.avax.network/ext/bc/C/rpc"
       },
     },
+    kovan: {
+      url: "https://kovan.infura.io/v3/61b2fd20d10849dd93a482c6952500d9",
+      accounts: [process.env.PRIVATE_KEY]
+    },
     fuji: {
       url: "https://api.avax-test.network/ext/bc/C/rpc",
       accounts: [process.env.PRIVATE_KEY]

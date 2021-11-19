@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.3;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
@@ -31,12 +33,10 @@ Status state;
 
   mapping (uint16 => address[]) investors ;
 
+
   address[] splitterContract;
 
   uint[] knownShares;
-
-
-
 
  event AgoraShared(
     uint Id,
@@ -57,11 +57,12 @@ Status state;
   );
 
    
-    event redeemAgoraShared(
-      uint _sharedId,
-      address indexed owner,
-      uint amountgained
-      );
+  event redeemAgoraShared(
+    uint _sharedId,
+    address indexed owner,
+    uint amountgained
+    );
+
 
 
 

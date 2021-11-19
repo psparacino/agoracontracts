@@ -145,7 +145,7 @@ it('an Investor should be able to buyout a shared token', async () => {
  
      console.log("Etherbalance", balance)
     
-    doubleArr["0"].map(result => {
+    doubleArr["0"].map(async(result) => {
       
      zerobalance = await getBalance(result);
      balance = ethers.utils.formatEther(zerobalance);

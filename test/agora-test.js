@@ -16,11 +16,11 @@ const { ethers } = require("hardhat");
   console.log("NftId", NftId)
   let result = await AgoraContract.create("tide")
    // wait until the transaction is mined
- await result.wait();
+  await result.wait();
  
- let NftIdNext = await AgoraContract.tokenCounter();
+  let NftIdNext = await AgoraContract.tokenCounter();
 
- expect(NftIdNext).to.be.gt(NftId);
+  expect(NftIdNext).to.be.gt(NftId);
 //  expect(NftId == NftIdNext).to.be.false;
 
 })
@@ -46,6 +46,28 @@ const { ethers } = require("hardhat");
      let  newNftUrl = await AgoraContract.imageURI();
      console.log("tokenUrl", newNftUrl)  
      expect(NftUrl == newNftUrl).to.be.false
+        })
+
+    it('Retreive film by tokenID', async () => {
+      let result = await AgoraContract.create("tide")
+        // wait until the transaction is mined
+      await result.wait();
+      let  title = await AgoraContract.getOneMovie(1);
+      console.log("title", title)  
+      expect(title == "tide")
+        })
+
+
+    it('Retreive array of films by tokenID', async () => {
+      let result = await AgoraContract.create("tide")
+        // wait until the transaction is mined
+      await result.wait();
+      let result2 = await AgoraContract.create("wave")
+      await result2.wait();
+      let  filmArray = await AgoraContract.getAllMovies();
+      console.log("filmArray", filmArray[1])  
+      expect(filmArray[1].hash == 'tide')
+      expect(filmArray[1].hash == 'wave')
         })
 
 

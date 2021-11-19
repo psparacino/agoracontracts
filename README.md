@@ -76,7 +76,7 @@ npx hardhat node --fork https://api.avax.network/ext/bc/C/rpc
 
 
 
-#### FUNCTION MOCKUP'S
+#### FUNCTION MOCKUPS
 
 
 # Agora SETTERS
@@ -87,7 +87,7 @@ Agora.
 This function receives the hashed value of the video from ipfs /filecoin
 
  emit CreatedAgora(tokenCounter, hash) -->
- create(string memory hash)
+ create(string memory hash, metadataURL)
 
 
 # Agora getters
@@ -100,11 +100,17 @@ baseTokenURI(hash) {
   returns the external Url which could the ipfs.io link
 }
 
-
 formatTokenURI(tokenURL) {
   returns the token metadata
   }
 
+getOneMovie(uint tokenID) {
+  returns hash (same as passed in in the create function above)
+}
+
+getAllMovies() {
+  returns struct of uint tokenID, string hash, string metadata
+}
 
 # AGORA MARKET SETTERS
  AgoraMarket.

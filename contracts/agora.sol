@@ -10,27 +10,52 @@ contract Agora is ERC721URIStorage, Ownable {
     string public imageURI;
     event CreatedAgora(uint256 indexed tokenId, string hash);
 
+    mapping (uint => Film) filmRepo;
+
+    Film[] filmArray;
+
+
     constructor() ERC721("Agora NFT", "ag")
     {
         tokenCounter = 0;
     }
 
-    function create(string memory hash) internal {
+    struct Film {
+      uint tokenID;
+      string hash;
+      string metadata;
+    }
+
+    function create(string memory hash, string memory metadataURL) public {
         _safeMint(msg.sender, tokenCounter);
 
-       console.log("msg.sender", msg.sender);
+        console.log("msg.sender", msg.sender);
 
-       console.log("tokenId", tokenCounter);
-
-      imageURI = baseTokenURI(hash);
+        console.log("tokenId", tokenCounter);
 
         console.log("imageURI", imageURI);
 
+        imageURI = baseTokenURI(hash);     
+
         _setTokenURI(tokenCounter, formatTokenURI(imageURI));
         tokenCounter = tokenCounter + 1;
+
+        //for retrieval
+
+        filmRepo[tokenCounter] = Film(tokenCounter, hash, metadataURL);
+
+        filmArray.push(Film(tokenCounter, hash, metadataURL));
+
         emit CreatedAgora(tokenCounter, hash);
     }
 
+    function getOneMovie(uint tokenID) public view returns(string memory) {
+      return filmRepo[tokenID].hash;
+    }
+
+    function getAllMovies() public view returns(Film[] memory) {
+        return filmArray;
+    }
 
 
 

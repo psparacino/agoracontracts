@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 
@@ -17,5 +19,5 @@ interface IAgoraShare {
      */
 
     function getShares(uint16 tokenId) external view returns ( uint [] memory); 
-}
-}
+  }
+
