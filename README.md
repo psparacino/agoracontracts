@@ -76,18 +76,19 @@ npx hardhat node --fork https://api.avax.network/ext/bc/C/rpc
 
 
 
-#### FUNCTION MOCKUPS
+#### FUNCTION MOCKUP'S
 
 
 # Agora SETTERS
 
 Agora.
 
-<!-- Create()
+** Create()
 This function receives the hashed value of the video from ipfs /filecoin
 
- emit CreatedAgora(tokenCounter, hash) -->
- create(string memory hash, metadataURL)
+ emit CreatedAgora(tokenCounter, hash)**
+ 
+ create(string memory hash)
 
 
 # Agora getters
@@ -100,63 +101,60 @@ baseTokenURI(hash) {
   returns the external Url which could the ipfs.io link
 }
 
+
 formatTokenURI(tokenURL) {
-  returns the token metadata
+  returns film/token metadata
   }
 
-getOneMovie(uint tokenID) {
-  returns hash (same as passed in in the create function above)
-}
-
-getAllMovies() {
-  returns struct of uint tokenID, string hash, string metadata
-}
 
 # AGORA MARKET SETTERS
- AgoraMarket.
 
 
-<!-- The creator of the video NFT opens an order to sell the created -->
+* **The creator of the video NFT opens an order to sell the created**
+
 openOrder(uint256 _tokenId, uint256 _price){
   emits event
 }
 
 
-<!-- The function is called by the investor willing to pay the entire sum after the creator list the created NFT from agora -->
+* **The function is called by the investor willing to pay the entire sum after the creator list the created NFT from agora**
+
 executeOrder(uint256 _orderId){
   emits event
 }
 
 
-<!-- This function allows the user to cancel an NFT order incase, and maybe fractionalize -->
+* **This function allows the user to cancel an NFT order incase, and maybe fractionalize**
+
 cancelOrder(uint256 _orderId){
   emits event
 }
 
 
-## AgoraShare   Setters
+## AgoraShare setters
 
 
-
-<!-- share a minted agora Nft token -->
+* **share a minted agora Nft token**
 
 function shareAgoraNft(uint _tokenId, uint priceinWei) {
   emits event
 }
 
 
-<!-- Buy part of a shared Video NFT token -->
+* **Buy part of a shared Video NFT token**
+
  function buyShares(uint16 _sharedId, uint16 amount) external payable {
    emits event
  }
 
-<!-- Redeem allows the video NFT owner to redeem the amount invested -->
+* **Redeem allows the video NFT owner to redeem the amount invested**
 
 function redeem ( uint _sharedId ) external {}
 
 
 ## AgoraNFT getters
-<!-- it returns two seperate arrays fo deploying the payment splitter
+
+* **returns two seperate arrays fo deploying the payment splitter**
 
 address [] is the array of investors in the particular VIDEO nfT token 
 
