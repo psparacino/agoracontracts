@@ -18,6 +18,11 @@ const { ethers } = require("hardhat");
       AgoraContract = await Agora.deploy();
 
       const AgoraShare = await ethers.getContractFactory("AgoraShare");
+      AgoraShareContract = await AgoraShare.deploy();
+
+
+
+      const AgoraShare = await ethers.getContractFactory("AgoraShare");
       AgoraShareContract = await AgoraShare.deploy()
     })
 
@@ -61,7 +66,7 @@ const { ethers } = require("hardhat");
 
 //   ---------------------------------------------------------------------------------- buyShares
  
-  it('The balance of token sharer should reduce after buying', async () => {
+  it('The token balance of token sharer should reduce after buying', async () => {
     // let zerobalance = 0;
     let amountToBuy = 1;
      
@@ -80,12 +85,12 @@ const { ethers } = require("hardhat");
  })
 
 
- it('The balance of token buyer should increase after buying', async () => {
+ it('The token balance of token buyer should increase after buying', async () => {
     // let zerobalance = 0;
     let amountToBuy = 1;
      
     let balance = await   AgoraShareContract.balanceOf(accounts[2]);
-    console.log("sharedId", balance)
+    console.log("balance", balance)
   
     let boughtShares = await AgoraShareContract.buyShares(sharedIdNext, amountToBuy).connect(account[2]);
 
@@ -105,13 +110,34 @@ const { ethers } = require("hardhat");
     let i = 0;
 
     while (investorlist.length > 0){
-    console.log("sharedId", investorlist[i])
+    console.log(`investor${i}`, investorlist[i])
     }
     expect((investorlist[0] == accounts[2]));
  })
 
 
 //  -------------------------------------------------------------------------------------------------- redeem
+
+it('The ether balance of sharer should increase after redemption', async () => {
+    let zerobalance = await getBalance(walletAddr);
+
+   let balance = ethers.utils.formatEther(zerobalance)
+
+    console.log("Etherbalance", balance)
+  
+    let redeemShares = await AgoraShareContract.redeem(sharedIdNext);
+
+     redeemShares.wait(1);
+
+    let newBalance =  await getBalance(walletAddr);
+
+    let afterredeembalance = ethers.utils.formatEther(newBalance);
+ 
+    console.log("Ether balance after redeeming", afterredeembalance);
+
+    expect(afterredeembalance).to.be.gt(balance);
+
+ })
 
 
 })
