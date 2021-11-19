@@ -19,11 +19,6 @@ const { ethers } = require("hardhat");
 
       const AgoraShare = await ethers.getContractFactory("AgoraShare");
       AgoraShareContract = await AgoraShare.deploy();
-
-
-
-      const AgoraShare = await ethers.getContractFactory("AgoraShare");
-      AgoraShareContract = await AgoraShare.deploy()
     })
 
 
@@ -138,6 +133,40 @@ it('The ether balance of sharer should increase after redemption', async () => {
     expect(afterredeembalance).to.be.gt(balance);
 
  })
+
+
+it('an Investor should be able to buyout a shared token', async () => {
+      
+    const doubleArr = AgoraShareContract.getInvestorNShares(sharedIdNext);
+
+    const ShareSplitter = await ethers.getContractFactory("PaymentSplitter");
+    PaymentSplitterContract4SharedIdNext = await ShareSplitter.deploy(doubleArr["0"], doubleArr["1"]);
+
+    let zerobalance ,balance ,newBalance , afterredeembalance;
+ 
+     console.log("Etherbalance", balance)
+    
+    doubleArr["0"].map(result => {
+      
+     zerobalance = await getBalance(result);
+     balance = ethers.utils.formatEther(zerobalance);
+     console.log("Etherbalance", balance)
+
+     let released = await PaymentSplitterContract4SharedIdNext.release(payable(result)) ;
+     released.wait(1)
+
+     newBalance =  await getBalance(result);
+     afterredeembalance = ethers.utils.formatEther(newBalance);
+     console.log("Ether balance after redeeming", afterredeembalance);
+
+     expect(afterredeembalance).to.be.gt(balance);
+
+    })
+    // for(let i = 0; i++; i < doubleArr["0"].length){
+    //     PaymentSplitterContract4SharedIdNext
+    // }
+ })
+
 
 
 })
