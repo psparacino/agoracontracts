@@ -73,3 +73,53 @@ npx hardhat node --fork https://api.avax.network/ext/bc/C/rpc
  npx hardhat run scripts/deployAgora.js
 ```
 
+
+
+
+#### FUNCTION MOCKUP'S
+
+
+# Agora SETTERS
+
+Agora.
+
+<!-- Create()
+This function receives the hashed value of the video from ipfs /filecoin
+
+ emit CreatedAgora(tokenCounter, hash) -->
+ create(string memory hash)
+
+
+# Agora getters
+
+<!-- baseTokenURI(string memory hash) public pure returns (string memory) {
+    return string(abi.encodePacked("https://ipfs.io", hash ));
+  } -->
+
+baseTokenURI(hash) {
+  returns the external Url which could the ipfs.io link
+}
+
+
+formatTokenURI(tokenURL) {
+  returns the token metadata
+  }
+
+
+# AGORA MARKET SETTERS
+ AgoraMarket.
+
+
+<!-- The creator of the video NFT opens an order to sell the created -->
+openOrder(uint256 _tokenId, uint256 _price){}
+
+
+<!-- The function is called by the investor willing to pay the entire sum after the creator list the created NFT from agora -->
+executeOrder(uint256 _orderId){}
+
+
+<!-- This function allows the user to cancel an NFT order incase, and maybe fractionalize -->
+cancelOrder(uint256 _orderId)
+
+
+## AgoraShare   Setters

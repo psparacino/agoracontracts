@@ -15,7 +15,7 @@ contract Agora is ERC721URIStorage, Ownable {
         tokenCounter = 0;
     }
 
-    function _create(string memory hash) internal {
+    function create(string memory hash) internal {
         _safeMint(msg.sender, tokenCounter);
 
        console.log("msg.sender", msg.sender);
