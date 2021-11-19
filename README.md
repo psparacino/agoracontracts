@@ -111,15 +111,52 @@ formatTokenURI(tokenURL) {
 
 
 <!-- The creator of the video NFT opens an order to sell the created -->
-openOrder(uint256 _tokenId, uint256 _price){}
+openOrder(uint256 _tokenId, uint256 _price){
+  emits event
+}
 
 
 <!-- The function is called by the investor willing to pay the entire sum after the creator list the created NFT from agora -->
-executeOrder(uint256 _orderId){}
+executeOrder(uint256 _orderId){
+  emits event
+}
 
 
 <!-- This function allows the user to cancel an NFT order incase, and maybe fractionalize -->
-cancelOrder(uint256 _orderId)
+cancelOrder(uint256 _orderId){
+  emits event
+}
 
 
 ## AgoraShare   Setters
+
+
+
+<!-- share a minted agora Nft token -->
+
+function shareAgoraNft(uint _tokenId, uint priceinWei) {
+  emits event
+}
+
+
+<!-- Buy part of a shared Video NFT token -->
+ function buyShares(uint16 _sharedId, uint16 amount) external payable {
+   emits event
+ }
+
+<!-- Redeem allows the video NFT owner to redeem the amount invested -->
+
+function redeem ( uint _sharedId ) external {}
+
+
+## AgoraNFT getters
+<!-- it returns two seperate arrays fo deploying the payment splitter
+
+address [] is the array of investors in the particular VIDEO nfT token 
+
+UINT [] is the precentage share of the investor index to index
+
+This is useful in the payment splitter constructor-->
+
+
+function getInvestorNShares(uint16 _sharedId) external  returns (address [] memory, uint [] memory) {}
