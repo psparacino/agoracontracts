@@ -134,16 +134,20 @@ cancelOrder(uint256 _orderId){
 ## AgoraShare setters
 
 
-* **share a minted agora Nft token**
+* **set amount to raise, minimum token, and mint the correct # of tokens to be sold**
 
-function shareAgoraNft(uint _tokenId, uint priceinWei) {
+function shareAgoraNft(uint _tokenId, uint32 minimumTokenPrice, uint32 raiseAmount) {
+  calculates the # of tokens to be minted based on minimum token price and raise amount
+   mints tokens and stores in SharedDrop struct
   emits event
 }
 
 
-* **Buy part of a shared Video NFT token**
+* **Invest in the NFT**
 
  function buyShares(uint16 _sharedId, uint16 amount) external payable {
+   allows user to purchase tokens/shares in NFT
+   
    emits event
  }
 
