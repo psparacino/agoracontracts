@@ -109,7 +109,7 @@ npx hardhat node --fork https://api.avax.network/ext/bc/C/rpc
   }
 
  * **Return array of all films' structs**
- * 
+  
   function getAllMovies() public view returns(Film[] memory) {
       returns array of all films' structs
     }
