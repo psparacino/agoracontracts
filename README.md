@@ -75,32 +75,43 @@ npx hardhat node --fork https://api.avax.network/ext/bc/C/rpc
 
 
 
-#### FUNCTION MOCKUP'S
+#### FUNCTION MOCKUPS
 
 
-# Agora SETTERS
+## agora.sol setters
 
-Agora.
 
-**Create()
-This function receives the hashed value of the video from ipfs /filecoin
 
- emit CreatedAgora(tokenCounter, hash)**
+ * **Create New Film NFT**
  
  create(string memory hash)
 
+ emit CreatedAgora(tokenCounter, hash)
+
  * **Allow film NFT to transfer ERC721 to buyShares on call**
 
-    function approveTokenTransfer(address NFTAddress, uint tokenID) public onlyOwner {
-        takes in address of film NFT and its token ID to approve transfer.
-        ERC721 function.  Currently not working as expected.
-    }
+  function approveTokenTransfer(address NFTAddress, uint tokenID) public onlyOwner {
+      takes in address of film NFT and its token ID to approve transfer.
+      ERC721 function.  Currently not working as expected.
+  }
 
-# Agora getters
+## agora.sol getters
 
 <!-- baseTokenURI(string memory hash) public pure returns (string memory) {
     return string(abi.encodePacked("https://ipfs.io", hash ));
   } -->
+
+
+ * **Return Film MetadataURL after passing in tokenID**
+ * 
+  function getOneMovie(uint tokenID) public view returns(string memory) {
+    returns film's metadataURL
+  }
+
+  function getAllMovies() public view returns(Film[] memory) {
+      returns array of all films' structs
+    }
+
 
 baseTokenURI(hash) {
   returns the external Url which could the ipfs.io link
@@ -112,7 +123,7 @@ formatTokenURI(tokenURL) {
   }
 
 
-# AGORA MARKET SETTERS
+## agoraMarket.sol setters
 
 
 * **The creator of the video NFT opens an order to sell the created**
@@ -136,7 +147,7 @@ cancelOrder(uint256 _orderId){
 }
 
 
-## AgoraShare setters
+## agorashare.sol setters
 
 
 * **set amount to raise, minimum token, and mint the correct # of tokens to be sold**
@@ -144,6 +155,7 @@ cancelOrder(uint256 _orderId){
 function shareAgoraNft(uint _tokenId, uint32 numberOfTokens, uint32 raiseAmount) {
   calculates the value of tokens token quantity and raise amount
    mints tokens and stores in SharedDrop struct
+   *currently an authorization issue when film's NFT transfers 721 to this contract on creation
   emits event
 }
 
@@ -169,7 +181,6 @@ function releaseTokens() public onlyOwner {
   }
 
   
-
 * **Redeem allows the video NFT owner to redeem the amount invested**
 
 function redeem ( uint _sharedId ) external {}
