@@ -103,11 +103,13 @@ npx hardhat node --fork https://api.avax.network/ext/bc/C/rpc
 
 
  * **Return Film MetadataURL after passing in tokenID**
- * 
+
   function getOneMovie(uint tokenID) public view returns(string memory) {
     returns film's metadataURL
   }
 
+ * **Return array of all films' structs**
+ * 
   function getAllMovies() public view returns(Film[] memory) {
       returns array of all films' structs
     }
@@ -153,9 +155,9 @@ cancelOrder(uint256 _orderId){
 * **set amount to raise, minimum token, and mint the correct # of tokens to be sold**
 
 function shareAgoraNft(uint _tokenId, uint32 numberOfTokens, uint32 raiseAmount) {
-  calculates the value of tokens token quantity and raise amount
-   mints tokens and stores in SharedDrop struct
-   *currently an authorization issue when film's NFT transfers 721 to this contract on creation
+   * calculates the value of tokens token quantity and raise amount
+   * mints tokens and stores in SharedDrop struct
+   * *currently an authorization issue when film's NFT transfers 721 to this contract on creation
   emits event
 }
 
