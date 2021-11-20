@@ -12,8 +12,7 @@ This is the decentralized marketplace for selling nft tokens
 ## paymentsplitting.sol.
 - This contract is
 - This contract splits payment amongs investors/ token owners of an Agora Nft after a huge buyout
-- This splitter is re-deployed everytime by a method from the frontend, and burns 100% sharedDrops of an 
- Agora NFT
+- This splitter is re-deployed everytime by a method from the frontend, and burns 100% sharedDrops of an Agora NFT
 
 
 
@@ -83,13 +82,19 @@ npx hardhat node --fork https://api.avax.network/ext/bc/C/rpc
 
 Agora.
 
-** Create()
+**Create()
 This function receives the hashed value of the video from ipfs /filecoin
 
  emit CreatedAgora(tokenCounter, hash)**
  
  create(string memory hash)
 
+ * **Allow film NFT to transfer ERC721 to buyShares on call**
+
+    function approveTokenTransfer(address NFTAddress, uint tokenID) public onlyOwner {
+        takes in address of film NFT and its token ID to approve transfer.
+        ERC721 function.  Currently not working as expected.
+    }
 
 # Agora getters
 
@@ -136,8 +141,8 @@ cancelOrder(uint256 _orderId){
 
 * **set amount to raise, minimum token, and mint the correct # of tokens to be sold**
 
-function shareAgoraNft(uint _tokenId, uint32 minimumTokenPrice, uint32 raiseAmount) {
-  calculates the # of tokens to be minted based on minimum token price and raise amount
+function shareAgoraNft(uint _tokenId, uint32 numberOfTokens, uint32 raiseAmount) {
+  calculates the value of tokens token quantity and raise amount
    mints tokens and stores in SharedDrop struct
   emits event
 }
@@ -150,6 +155,20 @@ function shareAgoraNft(uint _tokenId, uint32 minimumTokenPrice, uint32 raiseAmou
    
    emits event
  }
+
+* **Release Tokens**
+
+function releaseTokens() public onlyOwner {
+  allows the tokens to be purchased
+}
+
+* **Authorize Viewing**
+
+  function authorizeViewing(uint16 sharedID) public view returns(bool) {
+    allows users who have bought a token in a film to watch the film
+  }
+
+  
 
 * **Redeem allows the video NFT owner to redeem the amount invested**
 

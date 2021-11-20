@@ -1,21 +1,22 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.3;
+pragma solidity ^0.8.1;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 import './agora.sol';
 
-contract AgoraShare is ERC20Burnable {
+contract AgoraShare is ERC20, ERC20Burnable {
 
 uint sharedId;
 
 struct SharedDrop  {
   address sharer;
   // address splitterContract;
-  // address[] investors;
+
   // share [] shares;
-  uint16 tokensleft;
+  uint32 tokensleft;
   uint16 sold;
   uint256 tokenId;
   uint256 unitprice;
@@ -24,8 +25,8 @@ struct SharedDrop  {
   // mapping(uint => sharedDrop) public sharedDrops;
 }
 
-enum Status { Shared, Whole}
-Status state;
+    enum Status { Shared, Whole}
+    Status state;
 
   SharedDrop [] sharedDrops;
 
@@ -35,6 +36,10 @@ Status state;
 
 
   address[] splitterContract;
+  
+  //allows owner to release tokens for sale
+  
+  bool tokensAvailableForSale;
 
   uint[] knownShares;
 
@@ -42,6 +47,7 @@ Status state;
     uint Id,
     address indexed sharer,
     uint256 indexed tokenId,
+    uint tokenQuanity,
     uint256 priceInWei,
     Status state
   );
@@ -69,34 +75,37 @@ Status state;
    address AgoraNFTaddress;
 
 
-  constructor( address _agoraNft) ERC20('shared Agora Nft', 'agx') {
+  constructor(address _agoraNft) ERC20('AgoraShareToken', 'agx') {
    sharedId = 0;
    AgoraNFTaddress = _agoraNft;
   }
 
 
-  function shareAgoraNft(uint _tokenId, uint priceinWei) external 
+  function shareAgoraNft(uint _tokenId, uint32 numberOfTokens, uint32 raiseAmount) public
    {
     ERC721(AgoraNFTaddress).transferFrom(msg.sender, address(this), _tokenId);
+
+    uint32 tokenPrice = raiseAmount / numberOfTokens;
+
     SharedDrop memory sharedDrop = 
     // sharedDrops[_tokenId];
     SharedDrop({
         sharer: msg.sender,
         // splitterContract : "",
-        // investors: [""],
         tokenId: _tokenId,
-        tokensleft: 100,
+        tokensleft: numberOfTokens,
         sold: 0,
-       unitprice: priceinWei / 100 ,
+       unitprice: tokenPrice,
        state: Status.Shared
     });
      sharedId += 1;
-     _mint(address(this), 100 * 10 ** 18);
+     _mint(address(this), numberOfTokens * (10 ** 18));
 
 
   emit AgoraShared(sharedId - 1, 
                    sharedDrop.sharer,
                    sharedDrop.tokenId,
+                   sharedDrop.tokensleft,
                    sharedDrop.unitprice,
                    sharedDrop.state
                    );
@@ -105,13 +114,15 @@ Status state;
 
 
   function buyShares(uint16 _sharedId, uint16 amount) external payable {
-    //   require buyer has enough money to purchase the amount of tokens
-    // subtract the amount sold from the 
+    //  require buyer has enough money to purchase the amount of tokens
+    // subtract the amount sold from the tokensleft
      uint tobuy =  sharedDrops[_sharedId].unitprice * amount;
 
      require(sharedDrops[_sharedId].state == Status.Shared, "Shares not yet available for that Id" );
-
      require( msg.value >= tobuy, "you don't have enough money");
+     require( sharedDrops[_sharedId].tokensleft > amount, "you're trying to purchase more tokens than exist");
+     require( sharedDrops[_sharedId].tokensleft > 0, "all tokens sold");
+     
       sharedDrops[_sharedId].tokensleft -= amount;
       sharedDrops[_sharedId].sold += amount;
 
@@ -131,11 +142,25 @@ Status state;
                          address(this),
                          msg.sender );
   }
+  
+  function releaseTokens() public {
+      tokensAvailableForSale = true;
+  }
+  
+  function authorizeViewing(uint16 sharedID) public view returns(bool) {
+    uint arrayLength = investors[sharedID].length;
+    for (uint i; i < arrayLength - 1 ; i++) {
+        if (investors[sharedID][i] == msg.sender) {
+            return true;
+        }
+    }
+  }
 
   function redeem ( uint _sharedId ) external {
-    //   check if the sender is the owner
+    //  check if the sender is the owner
     // transfer sold token value to owner
     // send value to owner
+      require(tokensAvailableForSale == true);
       require(msg.sender == sharedDrops[_sharedId].sharer, "not owner bros");
       uint amountsold = sharedDrops[_sharedId].sold * sharedDrops[_sharedId].unitprice ;
       payable(msg.sender).transfer(amountsold);

@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: MIT
+
+
 pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -22,11 +24,10 @@ contract Agora is ERC721URIStorage, Ownable {
 
     struct Film {
       uint tokenID;
-      string hash;
-      string metadata;
+      string metadataURL;
     }
 
-    function create(string memory hash, string memory metadataURL) public {
+    function create(string memory metadataURL) public returns(uint, string memory) {
         _safeMint(msg.sender, tokenCounter);
 
         console.log("msg.sender", msg.sender);
@@ -35,22 +36,30 @@ contract Agora is ERC721URIStorage, Ownable {
 
         console.log("imageURI", imageURI);
 
-        imageURI = baseTokenURI(hash);     
+        imageURI = baseTokenURI(metadataURL);     
 
         _setTokenURI(tokenCounter, formatTokenURI(imageURI));
-        tokenCounter = tokenCounter + 1;
+        
 
         //for retrieval
 
-        filmRepo[tokenCounter] = Film(tokenCounter, hash, metadataURL);
+        filmRepo[tokenCounter] = Film(tokenCounter, metadataURL);
 
-        filmArray.push(Film(tokenCounter, hash, metadataURL));
+        filmArray.push(Film(tokenCounter, metadataURL));
+        
+        tokenCounter = tokenCounter + 1;
 
-        emit CreatedAgora(tokenCounter, hash);
+        emit CreatedAgora(tokenCounter, metadataURL);
+        
+        return(tokenCounter, metadataURL);
+    }
+    
+    function approveTokenTransfer(address NFTAddress, uint tokenID) public onlyOwner {
+        approve(NFTAddress, tokenID);
     }
 
     function getOneMovie(uint tokenID) public view returns(string memory) {
-      return filmRepo[tokenID].hash;
+      return filmRepo[tokenID].metadataURL;
     }
 
     function getAllMovies() public view returns(Film[] memory) {
