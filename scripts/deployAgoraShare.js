@@ -7,10 +7,12 @@ require('dotenv').config();
 
 async function main() {
     // We get the contract to deploy
-    const Agora = await ethers.getContractFactory("Agora");
-    AgoraContract = await Agora.deploy();
+
+
+    const AgoraShare = await ethers.getContractFactory("AgoraShareLedgerContract");
+    AgoraSharedContract = await AgoraShare.deploy("0x1a9927bD97505023a5a0670Be8f9f8872a998bB9");
     
-    console.log(`deployed ${AgoraContract} at : ${AgoraContract.address}`);
+    console.log(`deployed AgoraSharedContract at : ${AgoraSharedContract.address}`);
 
 
   }

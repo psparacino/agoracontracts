@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
 
+
 pragma solidity ^0.8.1;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import './agora.sol';
+
+
+
 
 contract AgoraShare is ERC20, ERC20Burnable {
 
@@ -20,6 +23,7 @@ struct SharedDrop  {
   uint16 sold;
   uint256 tokenId;
   uint256 unitprice;
+
   Status state ;//{ Shared, Whole}
 
   // mapping(uint => sharedDrop) public sharedDrops;
@@ -36,8 +40,6 @@ struct SharedDrop  {
 
 
   address[] splitterContract;
-  
-  //allows owner to release tokens for sale
   
   bool tokensAvailableForSale;
 
@@ -73,18 +75,42 @@ struct SharedDrop  {
 
 
    address AgoraNFTaddress;
+   //Agora agora;
+   
+   
 
 
-  constructor(address _agoraNft) ERC20('AgoraShareToken', 'agx') {
+  constructor(address _agoraNft, uint numberOfTokens) ERC20('AgoraShareToken', 'agx') {
    sharedId = 0;
    AgoraNFTaddress = _agoraNft;
+   //agora = Agora(_agoraNft);
+   //_mint(msg.sender, numberOfTokens * (10 ** 18));
   }
 
-
-  function shareAgoraNft(uint _tokenId, uint32 numberOfTokens, uint32 raiseAmount) public
-   {
-    require(msg.sender == ERC721(AgoraNFTaddress).ownerOf(_tokenId));
-    ERC721(AgoraNFTaddress).transferFrom(msg.sender, address(this), _tokenId);
+    function getNFTAddress() public view returns(address) {
+        return AgoraNFTaddress;
+    }
+    
+    function getTokenOwner(uint _tokenId) public view returns(address) {
+    
+        return agora.ownerOf(_tokenId);
+    }
+    
+    function getSharedId() public view returns(uint) {
+    
+        return sharedId;
+    }
+    
+    /*
+  function shareAgoraNft(uint _tokenId, uint32 numberOfTokens, uint32 raiseAmount) public {
+      
+     
+    require(1 == 1, "1 error");
+    //Agora agora = new Agora(AgoraNFTaddress);
+    //require(msg.sender == agora.ownerOf(_tokenId),"not owner");
+    require(1 == 2, "2 error");
+    //agora.approve(address(this), _tokenId);
+    //agora.transferFrom(msg.sender, address(this), _tokenId);
 
     uint32 tokenPrice = raiseAmount / numberOfTokens;
 
@@ -99,8 +125,9 @@ struct SharedDrop  {
        unitprice: tokenPrice,
        state: Status.Shared
     });
-     sharedId += 1;
-     _mint(address(this), numberOfTokens * (10 ** 18));
+    
+     //sharedId += 1;
+     ///_mint(address(this), numberOfTokens * (10 ** 18));
 
 
   emit AgoraShared(sharedId - 1, 
@@ -110,8 +137,14 @@ struct SharedDrop  {
                    sharedDrop.unitprice,
                    sharedDrop.state
                    );
+                   
   }
-
+  */
+  
+  function getApprove(uint _tokenId) public {
+      agora.approve(address(this), _tokenId);
+  }
+  
 
 
   function buyShares(uint16 _sharedId, uint16 amount) external payable {

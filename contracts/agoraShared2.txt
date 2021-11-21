@@ -1,63 +1,55 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.1;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
+pragma solidity ^0.8.1;
 import './agora.sol';
 
-contract AgoraShare is ERC20, ERC20Burnable {
 
-uint sharedId;
 
-struct SharedDrop  {
-  address sharer;
-  // address splitterContract;
 
-  // share [] shares;
-  uint32 tokensleft;
-  uint16 sold;
-  uint256 tokenId;
-  uint256 unitprice;
-  Status state ;//{ Shared, Whole}
+contract AgoraShare {
+    
+    uint public sharedId;
 
-  // mapping(uint => sharedDrop) public sharedDrops;
-}
+    struct SharedDrop  {
+      address sharer;
+      uint tokensleft;
+      uint sold;
+      uint tokenId;
+      uint unitprice;
+      Status state ;//{ Shared, Whole}
+    
+    }
 
     enum Status { Shared, Whole}
     Status state;
 
-  SharedDrop [] sharedDrops;
+  //SharedDrop [] sharedDrops;
 
-  mapping (address => uint16) [] share;
-
-  mapping (uint16 => address[]) investors ;
-
-
-  address[] splitterContract;
+  mapping (uint => mapping (address => uint)) investors ;
   
-  //allows owner to release tokens for sale
+  mapping (uint => SharedDrop) sharedDrops;
   
+  
+  //releases tokens for sale
   bool tokensAvailableForSale;
 
-  uint[] knownShares;
 
- event AgoraShared(
+  event AgoraShared(
     uint Id,
     address indexed sharer,
-    uint256 indexed tokenId,
+    uint indexed tokenId,
     uint tokenQuanity,
-    uint256 priceInWei,
+    uint priceInWei,
     Status state
   );
 
 
   event buyAgoraShared(
     uint Id,
-    uint256 indexed tokenId,
-    uint256 totalPrice,
-    uint16 amount,
+    uint indexed tokenId,
+    uint totalPrice,
+    uint amount,
     address indexed owner,
     address indexed buyer
   );
@@ -69,38 +61,62 @@ struct SharedDrop  {
     uint amountgained
     );
 
-
-
-
    address AgoraNFTaddress;
-
-
-  constructor(address _agoraNft) ERC20('AgoraShareToken', 'agx') {
+   Agora agora;
+   
+  constructor(address _agoraNft) {
    sharedId = 0;
    AgoraNFTaddress = _agoraNft;
+   agora = Agora(_agoraNft);
+   //_mint(msg.sender, numberOfTokens * (10 ** 18));
   }
 
+// GETTERS
 
-  function shareAgoraNft(uint _tokenId, uint32 numberOfTokens, uint32 raiseAmount) public
-   {
-    require(msg.sender == ERC721(AgoraNFTaddress).ownerOf(_tokenId));
-    ERC721(AgoraNFTaddress).transferFrom(msg.sender, address(this), _tokenId);
-
-    uint32 tokenPrice = raiseAmount / numberOfTokens;
-
+    function getNFTAddress() public view returns(address) {
+        return AgoraNFTaddress;
+    }
+    
+    function getTokenOwner(uint _tokenId) public view returns(address) {
+    
+        return agora.ownerOf(_tokenId);
+    }
+    
+    function getSharedId() public view returns(uint) {
+    
+        return sharedId;
+    }
+    
+    function getInvestmentStatus(uint _sharedId) public view returns(uint) {
+        return investors[_sharedId][msg.sender];
+    }
+    
+// THE REST OF IT
+    
+    
+    // create # of tokens to be offered and allocate equityOffered for sale, the rest to msg.sender(owner)
+    
+  function shareAgoraNft(uint _tokenId, uint numberOfTokens, uint equityOffered, uint raiseAmount) public {
+    require(equityOffered < 100, "can't offer more than 100%");
+    require(msg.sender == agora.ownerOf(_tokenId),"not owner");
+    
     SharedDrop memory sharedDrop = 
     // sharedDrops[_tokenId];
     SharedDrop({
         sharer: msg.sender,
         // splitterContract : "",
         tokenId: _tokenId,
-        tokensleft: numberOfTokens,
+        tokensleft: numberOfTokens * equityOffered,
         sold: 0,
-       unitprice: tokenPrice,
-       state: Status.Shared
+        unitprice: raiseAmount / ((numberOfTokens * equityOffered) / 100),
+        state: Status.Shared
     });
-     sharedId += 1;
-     _mint(address(this), numberOfTokens * (10 ** 18));
+
+    sharedDrops[_tokenId] = sharedDrop;
+    //owner allocation of unoffered equity
+    investors[sharedId][msg.sender] = numberOfTokens - ((numberOfTokens * equityOffered) / 100);
+    
+    //sharedId += 1;
 
 
   emit AgoraShared(sharedId - 1, 
@@ -110,52 +126,75 @@ struct SharedDrop  {
                    sharedDrop.unitprice,
                    sharedDrop.state
                    );
+                   
   }
-
-
-
-  function buyShares(uint16 _sharedId, uint16 amount) external payable {
-    //  require buyer has enough money to purchase the amount of tokens
+  
+  //(bool sent, ) = owner.call{value: uint(adjustedPrice)}("");
+                //require(sent, "Failed to send Ether");
+                
+    function buyShareinFilm2(uint _sharedId, uint amount) public {
+      
+    // require buyer has enough money to purchase the amount of tokens
     // subtract the amount sold from the tokensleft
-     uint tobuy =  sharedDrops[_sharedId].unitprice * amount;
+    // add investors purchase to ledger in investors
+     //uint tobuy =  sharedDrops[_sharedId].unitprice * amount;
+     //require(sharedDrops[_sharedId].state == Status.Shared, "revert 1");
+     //require( msg.value >= tobuy, "you don't have enough money");
+     require( sharedDrops[_sharedId].tokensleft > amount, "revert 2");
+     require( sharedDrops[_sharedId].tokensleft > 0, "revert 3");
 
+                         
+  }
+  
+ 
+/*
+  function buyShareinFilm(uint _sharedId, uint amount) public {
+      
+    // require buyer has enough money to purchase the amount of tokens
+    // subtract the amount sold from the tokensleft
+    // add investors purchase to ledger in investors
+     //uint tobuy =  sharedDrops[_sharedId].unitprice * amount;
      require(sharedDrops[_sharedId].state == Status.Shared, "Shares not yet available for that Id" );
-     require( msg.value >= tobuy, "you don't have enough money");
+     //require( msg.value >= tobuy, "you don't have enough money");
      require( sharedDrops[_sharedId].tokensleft > amount, "you're trying to purchase more tokens than exist");
      require( sharedDrops[_sharedId].tokensleft > 0, "all tokens sold");
      
-      sharedDrops[_sharedId].tokensleft -= amount;
-      sharedDrops[_sharedId].sold += amount;
-
-        share[_sharedId][msg.sender] = amount;
+      //sharedDrops[_sharedId].tokensleft -= amount;
+      //sharedDrops[_sharedId].sold += amount;
 
     //  sharedDrops[_tokenId].share[_tokenId][msg.sender] = amount;
 
-       investors[_sharedId].push(msg.sender);
+      //investorShares[_sharedId].push(msg.sender);
 
-     _transfer(sharedDrops[_sharedId].sharer, msg.sender, amount);
+     //_transfer(sharedDrops[_sharedId].sharer, msg.sender, amount);
 
-
+/*
   emit buyAgoraShared( _sharedId, 
                         sharedDrops[_sharedId].tokenId,
-                         tobuy,
+                         //tobuy,
+                         amount,
                          amount,
                          address(this),
                          msg.sender );
+                         
+                         
   }
+  
+  */
   
   function releaseTokens() public {
       tokensAvailableForSale = true;
   }
-  
+  /*
   function authorizeViewing(uint16 sharedID) public view returns(bool) {
     uint arrayLength = investors[sharedID].length;
     for (uint i; i < arrayLength - 1 ; i++) {
-        if (investors[sharedID][i] == msg.sender) {
+        if (investorShares[sharedID][i].investor == msg.sender) {
             return true;
         }
     }
   }
+  */
 
   function redeem ( uint _sharedId ) external {
     //  check if the sender is the owner
@@ -172,6 +211,7 @@ struct SharedDrop  {
 
       );
   }
+}
 
   // function buyOut(){
     // This function calls the getInvestor and getShares function
@@ -183,14 +223,14 @@ struct SharedDrop  {
   //    new PaymentSplitter()
   // this is to be done preferably in NodeJS
   // }
-
+/*
  function setSplitContract( uint tokenId, address _splitter) internal{
    require(msg.sender == sharedDrops[tokenId].sharer);
    splitterContract[tokenId] = _splitter;
  }
+*/
 
-
-
+/*
 // --------------------------------------getters-----------------------------------
   function getInvestor(uint16 _sharedId) internal view returns ( address [] memory) {
    return  investors[_sharedId];
@@ -216,3 +256,5 @@ struct SharedDrop  {
   return (investors[_sharedId], knownShares);
   }
 }
+
+*/
