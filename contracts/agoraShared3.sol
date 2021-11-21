@@ -105,12 +105,14 @@ contract AgoraShareLedgerContract {
     
     function getAuthorizeViewing(uint16 _tokenId) public view returns(bool) {
         uint investedAmount = investors[_tokenId][msg.sender];
+        require(investedAmount > 0, "no tokens have been purchased yet");
+        require(sharedDropsMapping[_tokenId].sold > 0, "no one has invested in the film yet");
         if (investedAmount > 0) {
                 return true;
             }
   }
-  
-     function getFilmInvestorArray(uint _tokenId) internal returns(address[] memory) {
+  /*
+     function getFilmInvestorArray(uint _tokenId) internal view returns(address[] memory) {
          return investorList[_tokenId];
      }
 
@@ -126,6 +128,29 @@ contract AgoraShareLedgerContract {
       }
         return(filmInvestors, sharesInvested);
   }
+  */
+
+    /*
+     function getFilmInvestorArray(uint _tokenId) internal view returns(address[] memory) {
+         return investorList[_tokenId];
+     }
+     */
+
+    
+    
+    function getFilmInvestors(uint _tokenId) public view returns(address[] memory, uint[] memory) {
+        //address[] memory filmInvestors = getFilmInvestorArray(_tokenId);
+
+       /*
+        for (uint i; i < investorList[_tokenId].length; i++) {
+          address investorAddress = investorList[_tokenId][i];
+          uint investorTokens = investors[_tokenId][investorAddress];
+          
+      }
+      */
+        return(investorList[_tokenId], sharesInvested);
+  }
+    
     
     
 // THE REST OF IT

@@ -36,9 +36,9 @@ contract Agora is ERC721URIStorage, Ownable {
 
         console.log("imageURI", imageURI);
 
-        imageURI = baseTokenURI(metadataURL);     
+        //imageURI = baseTokenURI(metadataURL);     
 
-        _setTokenURI(tokenCounter, formatTokenURI(imageURI));
+        //_setTokenURI(tokenCounter, formatTokenURI(imageURI));
         
 
         //for retrieval
@@ -66,23 +66,5 @@ contract Agora is ERC721URIStorage, Ownable {
         return filmArray;
     }
 
-
-
-  function baseTokenURI( string memory hash) public pure returns (string memory) {
-    return string(abi.encodePacked("https://opensea-creatures-api.herokuapp.com/api/creature/", hash ));
-  }
-
-
-
-
-    function formatTokenURI(string memory URI) public pure returns (string memory) {
-        return string(
-                abi.encodePacked(
-                                '{"name":"',
-                                "Agora NFT",
-                                '", "description":"A video fesival Nft!", "attributes":"", "image":"',URI,'"}'
-                            )
-                        );
-    }
 
 }
