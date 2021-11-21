@@ -154,7 +154,7 @@ cancelOrder(uint256 _orderId){
 
 * **set amount to raise, minimum token, and mint the correct # of tokens to be sold**
 
-function shareAgoraNft(uint _tokenId, uint32 numberOfTokens, uint32 raiseAmount) {
+function shareAgoraNft(uint _tokenId, uint32 numberOfTokens, uint equityOffered, uint32 raiseAmount) {
    * calculates the value of tokens token quantity and raise amount
    * mints tokens and stores in SharedDrop struct
    * *currently an authorization issue when film's NFT transfers 721 to this contract on creation
@@ -164,15 +164,27 @@ function shareAgoraNft(uint _tokenId, uint32 numberOfTokens, uint32 raiseAmount)
 
 * **Invest in the NFT**
 
- function buyShares(uint16 _sharedId, uint16 amount) external payable {
+  function getToBuy(uint _tokenId, uint amount) public view returns(uint){
+        calculates purchase price of order explicitly, if calling in FE with {value: }
+    }
+
+ function buyShareinFilm(uint16 _tokenId, uint16 amount) external payable {
    allows user to purchase tokens/shares in NFT
+   
+   emits event
+ }
+
+  function buyShareinFilmWithCall(uint16 _tokendId, uint16 amount) external payable {
+   allows user to purchase tokens/shares in NFT
+
+   same as above, but with different method of calling value. not sure which will work best.
    
    emits event
  }
 
 * **Release Tokens**
 
-function releaseTokens() public onlyOwner {
+function releaseSale(uint _tokenId) public onlyOwner {
   allows the tokens to be purchased
 }
 
@@ -183,9 +195,9 @@ function releaseTokens() public onlyOwner {
   }
 
   
-* **Redeem allows the video NFT owner to redeem the amount invested**
+* **Should distribute invested tokens with return to all investors**
 
-function redeem ( uint _sharedId ) external {}
+function distribution( uint _tokenId, uint buyOutAmount ) external {}
 
 
 ## AgoraNFT getters
