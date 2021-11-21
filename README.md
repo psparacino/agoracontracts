@@ -194,6 +194,14 @@ function releaseSale(uint _tokenId) public onlyOwner {
     allows users who have bought a token in a film to watch the film
   }
 
+* **Get Array of Investors and Amounts invested**
+
+    function getFilmInvestors(uint _tokenId) public returns(address[] memory, uint[] memory) {
+
+        returns array of filmInvestors addresses and a separate array of tokens invested (1-1 at indices)
+  }
+    
+
   
 * **Should distribute invested tokens with return to all investors**
 

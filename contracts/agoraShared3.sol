@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-
 pragma solidity ^0.8.1;
-
 import './agora.sol';
 
 
@@ -24,6 +22,8 @@ contract AgoraShareLedgerContract {
           Status state ;//{ Shared, Whole}
         
         }
+        
+
 
         enum Status { Shared, Whole }
         Status state;
@@ -35,6 +35,8 @@ contract AgoraShareLedgerContract {
       mapping (uint => address[]) investorList;
       
       mapping (uint => SharedDrop) sharedDropsMapping;
+      
+      uint[] sharesInvested;
       
       
       //releases tokens for sale
@@ -106,8 +108,25 @@ contract AgoraShareLedgerContract {
         if (investedAmount > 0) {
                 return true;
             }
-        
   }
+  
+     function getFilmInvestorArray(uint _tokenId) internal returns(address[] memory) {
+         return investorList[_tokenId];
+     }
+
+    
+    
+    function getFilmInvestors(uint _tokenId) public returns(address[] memory, uint[] memory) {
+        address[] memory filmInvestors = getFilmInvestorArray(_tokenId);
+       
+        for (uint i; i < investorList[_tokenId].length; i++) {
+          address investorAddress = investorList[_tokenId][i];
+          uint investorTokens = investors[_tokenId][investorAddress];
+          sharesInvested.push(investorTokens);
+      }
+        return(filmInvestors, sharesInvested);
+  }
+    
     
 // THE REST OF IT
     
@@ -116,6 +135,7 @@ contract AgoraShareLedgerContract {
     
   function shareAgoraNft(uint _tokenId, uint numberOfTokens, uint equityOffered, uint raiseAmount) public {
     require(equityOffered < 100, "can't offer more than 100%");
+    require(equityOffered > 1, "need to buy more than 1%");
     require(msg.sender == agora.ownerOf(_tokenId),"not owner");
     
     SharedDrop memory sharedDrop = 
