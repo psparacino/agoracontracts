@@ -6,7 +6,7 @@
 ## agoraMarket.sol
 This is the decentralized marketplace for selling nft tokens 
 
-## agoraShare.sol
+## agoraShare3.sol
  This contract allows you to split an agora Nft into shareable and purchasable bits(token)
 
 ## paymentsplitting.sol.
@@ -14,20 +14,11 @@ This is the decentralized marketplace for selling nft tokens
 - This contract splits payment amongs investors/ token owners of an Agora Nft after a huge buyout
 - This splitter is re-deployed everytime by a method from the frontend, and burns 100% sharedDrops of an Agora NFT
 
-
-
-<!-- Todo, not exactly profitable for this hackathon -->
-## stream payment.sol
-This streams payment to the content creator to ensure they don't runaway with investor's funding
-
-
-
 # create a token
  share the token or auction at marketplace
 
 # share token
 - Investor Buyout 
-- checkout line 140 to 143  and 145 agoraSharetests.js to implement buyout on the frontEnd
 
 # Agora Market
 - Investor Executes Order
